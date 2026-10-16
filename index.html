@@ -17,7 +17,8 @@
   --pt: #000;        /* texto del botón principal */
   --ok: #00e08a;     /* superaste */
   --no: #ff4d6a;     /* bajaste */
-  --cell: #141418;   /* celdas vacías de calendario y mapa de calor */
+  --cell: #141418;   /* días sin sesión en el calendario y el mapa del año */
+  --first: #3a3a44;  /* sesión que no se puede comparar (ejercicios nuevos) */
   color-scheme: dark;
   padding-top: env(safe-area-inset-top, 0px);
   padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -104,10 +105,9 @@ th { color: var(--mut); font-weight: 600; }
 .kpi b { display: block; font-size: 1.35rem; margin-top: 2px; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
 .kpi small { display: block; margin-top: 2px; font-size: .75rem; color: var(--mut); }
 
-/* Cambio: verde si superaste, rojo si bajaste, gris si quedó igual */
+/* Cambio de volumen: solo dos colores, verde (igual o más) y rojo (menos) */
 .up { color: var(--ok); }
 .dn { color: var(--no); }
-.eq { color: var(--mut); }
 
 /* ===== Metas ===== */
 .goal { display: flex; justify-content: space-between; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--bd); font-size: .9rem; }
@@ -119,6 +119,10 @@ th { color: var(--mut); font-weight: 600; }
 .cal div { aspect-ratio: 1; border-radius: 8px; background: var(--cell); display: flex; align-items: center; justify-content: center; font-size: .8rem; color: var(--mut); }
 .cal .h { background: none; aspect-ratio: auto; font-size: .72rem; }
 .cal .blank { background: none; }
+.cal .day-up, .cal .day-dn, .cal .day-first { font-weight: 700; }
+.cal .day-up { background: var(--ok); color: #000; }
+.cal .day-dn { background: var(--no); color: #000; }
+.cal .day-first { background: var(--first); color: var(--tx); }
 
 /* ===== Barras por grupo ===== */
 .bar { display: flex; align-items: center; gap: 8px; margin: 6px 0; font-size: .85rem; }
@@ -127,6 +131,9 @@ th { color: var(--mut); font-weight: 600; }
 
 /* ===== Gráficas SVG ===== */
 svg text { fill: var(--mut); font-size: 11px; }
+.heat-up { fill: var(--ok); }
+.heat-dn { fill: var(--no); }
+.heat-first { fill: var(--first); }
 </style>
 </head>
 <body>
@@ -269,20 +276,14 @@ svg text { fill: var(--mut); font-size: 11px; }
     return String(text).replace(/[&<>"]/g, c => map[c]);
   }
 
-  function withAlpha(hex, alpha) {
-    const n = parseInt(hex.slice(1), 16);
-    return `rgba(${n >> 16}, ${(n >> 8) & 255}, ${n & 255}, ${alpha})`;
-  }
-
   function percentChange(now, before) {
     return before ? (now - before) / before * 100 : null;
   }
 
-  // Verde si subió, rojo si bajó, gris si quedó igual, "—" si no hay con qué comparar.
+  // Solo dos colores: verde si no bajó, rojo si bajó. "—" si no hay con qué comparar.
   function changeBadge(percent) {
     if (percent === null) return "—";
-    if (Math.abs(percent) < 0.05) return `<span class="eq">= 0.0%</span>`;
-    const up = percent > 0;
+    const up = percent >= 0;
     return `<span class="${up ? "up" : "dn"}">${up ? "▲" : "▼"} ${Math.abs(percent).toFixed(1)}%</span>`;
   }
 
@@ -290,8 +291,10 @@ svg text { fill: var(--mut); font-size: 11px; }
     return `<div class="kpi"><span>${label}</span><b>${value}</b>${note ? `<small>${note}</small>` : ""}</div>`;
   }
 
-  const groupLegend = () =>
-    GROUPS.map(g => `<span><i class="dot" style="background:${GROUP_COLORS[g]}"></i>${g}</span>`).join("");
+  const trendLegend = () =>
+    `<span><i class="dot" style="background:var(--ok)"></i>Subiste o igualaste</span>` +
+    `<span><i class="dot" style="background:var(--no)"></i>Bajaste</span>` +
+    `<span><i class="dot" style="background:var(--first)"></i>Sin comparar</span>`;
 
 
   /* =====================================================================
@@ -382,6 +385,27 @@ svg text { fill: var(--mut); font-size: 11px; }
     return parts.join(" · ");
   }
 
+  // Nombres de los ejercicios de la sesión, sin repetir ("Press banca" = "press banca").
+  function exerciseNames(session) {
+    const names = new Map();
+    session.items.forEach(e => names.set(exerciseKey(e.ex), e.ex));
+    return [...names.values()];
+  }
+
+  // Tendencia de una sesión en dos colores: verde si el volumen no bajó respecto a la última vez
+  // de sus ejercicios, rojo si bajó. Si no hay con qué comparar (ejercicios nuevos) queda neutra.
+  const TRENDS = {
+    up:    { cell: "day-up",    mark: "heat-up",    text: "subiste o igualaste" },
+    down:  { cell: "day-dn",    mark: "heat-dn",    text: "bajaste" },
+    first: { cell: "day-first", mark: "heat-first", text: "sin comparar" }
+  };
+
+  function trendOf(sessions, date) {
+    const change = compareWithLastTime(sessions[date], date).change;
+    if (change === null) return TRENDS.first;
+    return change >= 0 ? TRENDS.up : TRENDS.down;
+  }
+
 
   /* =====================================================================
      5. PESTAÑA SESIÓN
@@ -415,9 +439,7 @@ svg text { fill: var(--mut); font-size: 11px; }
   }
 
   function goalsList(session, date) {
-    const names = new Map();                      // un solo renglón por ejercicio
-    session.items.forEach(e => names.set(exerciseKey(e.ex), e.ex));
-    return [...names.values()].map(name => {
+    return exerciseNames(session).map(name => {
       const set = bestSetOn(name, date);
       const goal = nextTarget(set);
       return `<div class="goal">
@@ -593,7 +615,7 @@ svg text { fill: var(--mut); font-size: 11px; }
       kpi("Series", total.sets) +
       kpi("vs mes anterior", changeBadge(percentChange(total.volume, previousTotal.volume)));
 
-    $("ml").innerHTML = groupLegend();
+    $("ml").innerHTML = trendLegend();
     $("cal").innerHTML = monthCalendar(ym, year, month);
 
     const maxGroup = Math.max(1, ...GROUPS.map(g => total.byGroup[g] || 0));
@@ -609,16 +631,15 @@ svg text { fill: var(--mut); font-size: 11px; }
     const sessions = buildSessions();
     const offset = (new Date(year, month - 1, 1).getDay() + 6) % 7;   // la semana empieza en lunes
     const daysInMonth = new Date(year, month, 0).getDate();
-    const maxVolume = Math.max(1, ...Object.keys(sessions).filter(d => d.startsWith(ym)).map(d => sessions[d].volume));
 
     let html = ["L", "M", "X", "J", "V", "S", "D"].map(l => `<div class="h">${l}</div>`).join("");
     html += `<div class="blank"></div>`.repeat(offset);
     for (let day = 1; day <= daysInMonth; day++) {
       const date = `${ym}-${pad2(day)}`;
       const s = sessions[date];
-      html += s
-        ? `<div style="background:${withAlpha(GROUP_COLORS[s.dominant], 0.4 + 0.6 * s.volume / maxVolume)};color:#000;font-weight:700" title="${date}: ${formatKg(s.volume)} kg (${s.dominant})">${day}</div>`
-        : `<div>${day}</div>`;
+      if (!s) { html += `<div>${day}</div>`; continue; }
+      const trend = trendOf(sessions, date);
+      html += `<div class="${trend.cell}" title="${date}: ${formatKg(s.volume)} kg · ${trend.text}">${day}</div>`;
     }
     return html;
   }
@@ -649,7 +670,7 @@ svg text { fill: var(--mut); font-size: 11px; }
       kpi("Promedio por sesión", `${formatKg(sessionCount ? total.volume / sessionCount : 0)} kg`) +
       kpi("Mejor mes", total.volume ? MONTHS[bestMonth] : "—");
 
-    $("al").innerHTML = groupLegend();
+    $("al").innerHTML = trendLegend();
     $("heat").innerHTML = yearHeatmap(year, sessions);
     $("stk").innerHTML = monthlyStackedChart(monthly);
   }
@@ -660,7 +681,6 @@ svg text { fill: var(--mut); font-size: 11px; }
     const offset = (new Date(year, 0, 1).getDay() + 6) % 7;
     const totalDays = Math.round((new Date(year, 11, 31) - new Date(year, 0, 1)) / 864e5) + 1;
     const weeks = Math.ceil((offset + totalDays) / 7);
-    const maxVolume = Math.max(1, ...Object.keys(sessions).filter(d => d.startsWith(year + "-")).map(d => sessions[d].volume));
 
     let svg = "";
     for (let i = 0; i < totalDays; i++) {
@@ -669,9 +689,9 @@ svg text { fill: var(--mut); font-size: 11px; }
       const column = Math.floor((i + offset) / 7);
       const row = (i + offset) % 7;
       const s = sessions[date];
-      const fill = s ? withAlpha(GROUP_COLORS[s.dominant], 0.4 + 0.6 * s.volume / maxVolume) : "var(--cell)";
-      const tooltip = s ? `: ${formatKg(s.volume)} kg (${s.dominant})` : "";
-      svg += `<rect x="${LEFT + column * STEP}" y="${TOP + row * STEP}" width="12" height="12" rx="3" fill="${fill}"><title>${date}${tooltip}</title></rect>`;
+      const trend = s ? trendOf(sessions, date) : null;
+      const tooltip = s ? `: ${formatKg(s.volume)} kg · ${trend.text}` : "";
+      svg += `<rect class="${trend ? trend.mark : ""}" x="${LEFT + column * STEP}" y="${TOP + row * STEP}" width="12" height="12" rx="3" fill="var(--cell)"><title>${date}${tooltip}</title></rect>`;
       if (day.getDate() === 1) svg += `<text x="${LEFT + column * STEP}" y="12">${MONTHS[day.getMonth()]}</text>`;
     }
     ["L", "X", "V"].forEach((letter, i) => { svg += `<text x="4" y="${TOP + i * 30 + 10}">${letter}</text>`; });
