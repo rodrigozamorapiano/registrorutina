@@ -5,218 +5,803 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Rutina de ejercicios</title>
 <style>
-:root{--bg:#000;--card:#0d0d0f;--tx:#f4f4f5;--mut:#8a8a93;--bd:#1f1f24;--ac:#8b7cff;--pb:#fff;--pt:#000;--ok:#00e08a;--no:#ff4d6a;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.4}
-main{max-width:920px;margin:0 auto;padding:20px 16px 40px}
-.banner{background:radial-gradient(circle at 90% -20%,rgba(0,224,138,.28),transparent 55%),radial-gradient(circle at 0% 120%,rgba(139,124,255,.22),transparent 55%),#0a0a0c;border:1px solid var(--bd);border-radius:16px;padding:20px 18px 16px;margin-bottom:14px}
-.banner h1{margin:0 0 4px;font-size:1.5rem}.banner p{margin:0;color:var(--mut)}.g{color:var(--ok)}
-.tabs{display:flex;gap:6px;margin-bottom:14px}.tabs button{flex:1}
-.tabs button.on{background:var(--pb);color:var(--pt);border-color:var(--pb);font-weight:700}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px;margin-bottom:16px}
-h2{font-size:1rem;margin:0 0 10px}
-.hint{font-size:.82rem;color:var(--mut);margin:8px 0 0}
-input,select{padding:9px;border:1px solid var(--bd);border-radius:8px;background:#000;color:var(--tx);font-size:.95rem;width:100%}
-input:focus,select:focus{outline:none;border-color:var(--ac)}
-label{display:block;font-size:.78rem;color:var(--mut);margin-bottom:3px}
-button{padding:9px 14px;border-radius:8px;border:1px solid var(--bd);background:var(--card);color:var(--tx);cursor:pointer;font-size:.9rem}
-button.p{background:var(--pb);border-color:var(--pb);color:var(--pt);font-weight:700}
-.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;align-items:end}
-.sc{overflow-x:auto}
-table{border-collapse:collapse;width:100%;min-width:420px;font-size:.88rem}
-th,td{padding:7px 6px;border-bottom:1px solid var(--bd);text-align:left;font-variant-numeric:tabular-nums}
-th{color:var(--mut);font-weight:600}
-.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
-.kpi{background:var(--card);border:1px solid var(--bd);border-top:2px solid var(--ac);border-radius:16px;padding:14px}
-.kpi span{color:var(--mut);font-size:.82rem}.kpi b{display:block;font-size:1.35rem;margin-top:2px;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
-.up{color:var(--ok)}.dn{color:var(--no)}
-.leg{display:flex;gap:12px;flex-wrap:wrap;font-size:.8rem;color:var(--mut);margin-bottom:10px}
-.goal{display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid var(--bd);font-size:.9rem}
-.goal b{color:var(--ok)}
-.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;max-width:420px}
-.cal div{aspect-ratio:1;border-radius:8px;background:#141418;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:var(--mut)}
-.cal .h{background:none;aspect-ratio:auto;font-size:.72rem}
-.bar{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:.85rem}
-.bar i{display:block;height:12px;border-radius:6px}
-.bar span{min-width:70px;color:var(--mut)}
-svg text{fill:var(--mut);font-size:11px}
+/* ===== Colores y base ===== */
+:root {
+  --bg: #000;
+  --card: #0d0d0f;
+  --tx: #f4f4f5;
+  --mut: #8a8a93;
+  --bd: #1f1f24;
+  --ac: #8b7cff;
+  --pb: #fff;        /* fondo del botón principal */
+  --pt: #000;        /* texto del botón principal */
+  --ok: #00e08a;     /* superaste */
+  --no: #ff4d6a;     /* bajaste */
+  --cell: #141418;   /* celdas vacías de calendario y mapa de calor */
+  color-scheme: dark;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--tx);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.4;
+}
+main { max-width: 920px; margin: 0 auto; padding: 20px 16px 40px; }
+
+/* ===== Encabezado y pestañas ===== */
+.banner {
+  background:
+    radial-gradient(circle at 90% -20%, rgba(0, 224, 138, .28), transparent 55%),
+    radial-gradient(circle at 0% 120%, rgba(139, 124, 255, .22), transparent 55%),
+    #0a0a0c;
+  border: 1px solid var(--bd);
+  border-radius: 16px;
+  padding: 20px 18px 16px;
+  margin-bottom: 14px;
+}
+.banner h1 { margin: 0 0 4px; font-size: 1.5rem; }
+.banner p { margin: 0; color: var(--mut); }
+.accent { color: var(--ok); }
+
+.tabs { display: flex; gap: 6px; margin-bottom: 14px; }
+.tabs button { flex: 1; }
+.tabs button.on { background: var(--pb); color: var(--pt); border-color: var(--pb); font-weight: 700; }
+
+/* ===== Tarjetas y formularios ===== */
+.card {
+  background: var(--card);
+  border: 1px solid var(--bd);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+h2 { font-size: 1rem; margin: 0 0 10px; }
+.hint { font-size: .82rem; color: var(--mut); margin: 8px 0 0; }
+label { display: block; font-size: .78rem; color: var(--mut); margin-bottom: 3px; }
+
+input, select {
+  width: 100%;
+  padding: 9px;
+  border: 1px solid var(--bd);
+  border-radius: 8px;
+  background: #000;
+  color: var(--tx);
+  font-size: .95rem;
+}
+input:focus, select:focus { outline: none; border-color: var(--ac); }
+
+button {
+  padding: 9px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--bd);
+  background: var(--card);
+  color: var(--tx);
+  cursor: pointer;
+  font-size: .9rem;
+}
+button.primary { background: var(--pb); border-color: var(--pb); color: var(--pt); font-weight: 700; }
+
+.form { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; align-items: end; }
+.row-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* ===== Tablas y leyendas ===== */
+.scroll-x { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; min-width: 420px; font-size: .88rem; }
+th, td { padding: 7px 6px; border-bottom: 1px solid var(--bd); text-align: left; font-variant-numeric: tabular-nums; }
+th { color: var(--mut); font-weight: 600; }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
+.legend { display: flex; gap: 12px; flex-wrap: wrap; font-size: .8rem; color: var(--mut); margin-bottom: 10px; }
+
+/* ===== Indicadores (KPI) ===== */
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.kpi { background: var(--card); border: 1px solid var(--bd); border-top: 2px solid var(--ac); border-radius: 16px; padding: 14px; }
+.kpi > span { color: var(--mut); font-size: .82rem; }   /* solo la etiqueta; "> span" evita pisar el verde/rojo de .up y .dn */
+.kpi b { display: block; font-size: 1.35rem; margin-top: 2px; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.kpi small { display: block; margin-top: 2px; font-size: .75rem; color: var(--mut); }
+
+/* Cambio: verde si superaste, rojo si bajaste, gris si quedó igual */
+.up { color: var(--ok); }
+.dn { color: var(--no); }
+.eq { color: var(--mut); }
+
+/* ===== Metas ===== */
+.goal { display: flex; justify-content: space-between; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--bd); font-size: .9rem; }
+.goal b { color: var(--ok); }
+.goal small { color: var(--mut); }
+
+/* ===== Calendario del mes ===== */
+.cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; max-width: 420px; }
+.cal div { aspect-ratio: 1; border-radius: 8px; background: var(--cell); display: flex; align-items: center; justify-content: center; font-size: .8rem; color: var(--mut); }
+.cal .h { background: none; aspect-ratio: auto; font-size: .72rem; }
+.cal .blank { background: none; }
+
+/* ===== Barras por grupo ===== */
+.bar { display: flex; align-items: center; gap: 8px; margin: 6px 0; font-size: .85rem; }
+.bar i { display: block; height: 12px; border-radius: 6px; }
+.bar span { min-width: 70px; color: var(--mut); }
+
+/* ===== Gráficas SVG ===== */
+svg text { fill: var(--mut); font-size: 11px; }
 </style>
 </head>
 <body>
 <main>
-<div class="banner"><h1>Rutina de <span class="g">ejercicios</span></h1><p>Registra tu sesión, supera tu volumen y mira tu progreso.</p></div>
-<div class="tabs"><button id="b1" onclick="tab(1)">Sesión</button><button id="b2" onclick="tab(2)">Progreso</button><button id="b3" onclick="tab(3)">Mes</button><button id="b4" onclick="tab(4)">Año</button></div>
 
-<section id="t1">
-  <div class="card">
-    <h2>Agregar ejercicio</h2>
-    <div class="form">
-      <div><label>Fecha</label><input id="fd" type="date" oninput="renderAll()"></div>
-      <div><label>Grupo muscular</label><select id="fg"></select></div>
-      <div><label>Ejercicio</label><input id="fe" list="exl" placeholder="Press banca" oninput="hint()"></div>
-      <div><label>Peso (kg)</label><input id="fw" type="number" step="any" min="0"></div>
-      <div><label>Repeticiones</label><input id="fr" type="number" min="1"></div>
-      <div><label>Series</label><input id="fs" type="number" min="1" value="3"></div>
-      <button class="p" onclick="add()">Agregar</button>
-    </div>
-    <datalist id="exl"></datalist>
-    <p class="hint" id="hint"></p>
+  <div class="banner">
+    <h1>Rutina de <span class="accent">ejercicios</span></h1>
+    <p>Registra tu sesión, supera tu volumen y mira tu progreso.</p>
   </div>
-  <div class="kpis" id="sk"></div>
-  <div class="card"><h2>Ejercicios de la sesión</h2><div class="sc" id="stab"></div></div>
-  <div class="card"><h2>Meta para la próxima sesión</h2><div id="goals"></div><p class="hint">Regla: suma 1 repetición por sesión hasta llegar a 12; al lograrlo, sube 2.5 kg y vuelve a 8 repeticiones.</p></div>
-</section>
 
-<section id="t2" style="display:none">
-  <div class="card"><h2>Volumen por sesión (kg)</h2><div class="sc" id="c1"></div></div>
-  <div class="card"><h2>Peso máximo por ejercicio</h2><select id="px" onchange="renderProg()" style="margin-bottom:10px"></select><div class="sc" id="c2"></div></div>
-</section>
+  <div class="tabs">
+    <button id="b1" data-tab="1">Sesión</button>
+    <button id="b2" data-tab="2">Progreso</button>
+    <button id="b3" data-tab="3">Mes</button>
+    <button id="b4" data-tab="4">Año</button>
+  </div>
 
-<section id="t3" style="display:none">
-  <div class="card"><label>Mes</label><input id="mm" type="month" oninput="renderMes()" style="max-width:220px"></div>
-  <div class="kpis" id="mk"></div>
-  <div class="card"><h2>Calendario del mes</h2><div class="leg" id="ml"></div><div class="cal" id="cal"></div></div>
-  <div class="card"><h2>Volumen por grupo muscular</h2><div id="mb"></div></div>
-</section>
+  <!-- 1. Sesión -->
+  <section id="t1">
+    <div class="card">
+      <h2>Agregar ejercicio</h2>
+      <div class="form">
+        <div><label for="fd">Fecha</label><input id="fd" type="date"></div>
+        <div><label for="fg">Grupo muscular</label><select id="fg"></select></div>
+        <div><label for="fe">Ejercicio</label><input id="fe" list="exl" placeholder="Press banca"></div>
+        <div><label for="fw">Peso (kg)</label><input id="fw" type="number" step="any" min="0"></div>
+        <div><label for="fr">Repeticiones</label><input id="fr" type="number" min="1"></div>
+        <div><label for="fs">Series</label><input id="fs" type="number" min="1" value="3"></div>
+        <button id="btnAdd" class="primary">Agregar</button>
+      </div>
+      <datalist id="exl"></datalist>
+      <p class="hint" id="hint"></p>
+    </div>
 
-<section id="t4" style="display:none">
-  <div class="card"><label>Año</label><select id="ay" onchange="renderAnio()" style="max-width:160px"></select></div>
-  <div class="kpis" id="ak"></div>
-  <div class="card"><h2>Sesiones del año</h2><div class="leg" id="al"></div><div class="sc" id="heat"></div></div>
-  <div class="card"><h2>Volumen mensual por grupo (kg)</h2><div class="sc" id="stk"></div></div>
-  <div class="card"><h2>Datos</h2><div style="display:flex;gap:8px;flex-wrap:wrap"><button id="demo" onclick="demo()">Cargar datos de ejemplo</button><button id="clr" onclick="clr()">Borrar todo</button></div><p class="hint">Tus datos se guardan en este navegador.</p></div>
-</section>
+    <div class="kpis" id="sk"></div>
+
+    <div class="card">
+      <h2>Ejercicios de la sesión</h2>
+      <div class="scroll-x" id="stab"></div>
+    </div>
+
+    <div class="card">
+      <h2>Meta para la próxima sesión</h2>
+      <div id="goals"></div>
+      <p class="hint">Regla: suma 1 repetición por sesión hasta llegar a 12; al lograrlo, sube 2.5 kg y vuelve a 8 repeticiones.</p>
+    </div>
+  </section>
+
+  <!-- 2. Progreso -->
+  <section id="t2" hidden>
+    <div class="card"><h2>Volumen por sesión (kg)</h2><div class="scroll-x" id="c1"></div></div>
+    <div class="card">
+      <h2>Peso máximo por ejercicio</h2>
+      <select id="px" style="margin-bottom:10px"></select>
+      <div class="scroll-x" id="c2"></div>
+    </div>
+  </section>
+
+  <!-- 3. Mes -->
+  <section id="t3" hidden>
+    <div class="card"><label for="mm">Mes</label><input id="mm" type="month" style="max-width:220px"></div>
+    <div class="kpis" id="mk"></div>
+    <div class="card"><h2>Calendario del mes</h2><div class="legend" id="ml"></div><div class="cal" id="cal"></div></div>
+    <div class="card"><h2>Volumen por grupo muscular</h2><div id="mb"></div></div>
+  </section>
+
+  <!-- 4. Año -->
+  <section id="t4" hidden>
+    <div class="card"><label for="ay">Año</label><select id="ay" style="max-width:160px"></select></div>
+    <div class="kpis" id="ak"></div>
+    <div class="card"><h2>Sesiones del año</h2><div class="legend" id="al"></div><div class="scroll-x" id="heat"></div></div>
+    <div class="card"><h2>Volumen mensual por grupo (kg)</h2><div class="scroll-x" id="stk"></div></div>
+    <div class="card">
+      <h2>Datos</h2>
+      <div class="row-buttons">
+        <button id="btnDemo">Cargar datos de ejemplo</button>
+        <button id="btnClear">Borrar todo</button>
+      </div>
+      <p class="hint">Tus datos se guardan en este navegador.</p>
+    </div>
+  </section>
+
 </main>
 
 <script>
-const $=id=>document.getElementById(id);
-const G={"Pecho":"#ff4d6a","Espalda":"#38bdf8","Pierna":"#00e08a","Hombro":"#ffb020","Bíceps":"#8b7cff","Tríceps":"#f472b6","Core":"#a3e635"};
-const GN=Object.keys(G),MES=["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
-let E=[];try{E=JSON.parse(localStorage.getItem("gym_v1")||"[]")}catch(e){E=[]}
-const save=()=>{try{localStorage.setItem("gym_v1",JSON.stringify(E))}catch(e){}};
-const vol=e=>e.w*e.r*e.s,p2=n=>String(n).padStart(2,"0"),fmt=n=>Math.round(n).toLocaleString("es-MX");
-const ymd=d=>d.getFullYear()+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate());
-const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const rgba=(h,a)=>{const n=parseInt(h.slice(1),16);return`rgba(${n>>16},${n>>8&255},${n&255},${a})`};
-const dm=d=>d.slice(8)+"/"+d.slice(5,7);
-const pct=(a,b)=>b?((a-b)/b*100):null;
-const delta=p=>p===null?"—":`<span class="${p>=0?"up":"dn"}">${p>=0?"▲":"▼"} ${Math.abs(p).toFixed(1)}%</span>`;
-const legend=()=>GN.map(g=>`<span><i class="dot" style="background:${G[g]}"></i>${g}</span>`).join("");
+(() => {
+  "use strict";
 
-function days(){
-  const m={};E.forEach(e=>{const d=m[e.date]||(m[e.date]={v:0,sets:0,g:{},items:[]});d.v+=vol(e);d.sets+=e.s;d.g[e.group]=(d.g[e.group]||0)+vol(e);d.items.push(e)});
-  Object.values(m).forEach(d=>d.dom=Object.keys(d.g).sort((a,b)=>d.g[b]-d.g[a])[0]);return m;
-}
-function tab(n){for(let i=1;i<=4;i++){$("t"+i).style.display=i===n?"block":"none";$("b"+i).className=i===n?"on":""}renderAll()}
+  /* =====================================================================
+     1. CONFIGURACIÓN
+     ===================================================================== */
+  const STORAGE_KEY = "gym_v1";   // misma clave de siempre: tus datos guardados se conservan
 
-function add(){
-  const e={id:Date.now()+Math.random(),date:$("fd").value,group:$("fg").value,ex:$("fe").value.trim(),w:parseFloat($("fw").value),r:parseInt($("fr").value),s:parseInt($("fs").value)||1};
-  if(!e.date||!e.ex||isNaN(e.w)||!(e.r>0))return $("hint").textContent="Completa ejercicio, peso y repeticiones.";
-  E.push(e);save();renderAll();
-}
-function del(id){E=E.filter(e=>e.id!==id);save();renderAll()}
-function target(e){return e.r>=12?{w:e.w+2.5,r:8}:{w:e.w,r:e.r+1}}
-function lastOf(ex,before){
-  const l=E.filter(e=>e.ex.toLowerCase()===ex.toLowerCase()&&(!before||e.date<before));
-  if(!l.length)return null;const d=l.map(e=>e.date).sort().pop();
-  return l.filter(e=>e.date===d).sort((a,b)=>b.w-a.w||b.r-a.r)[0];
-}
-function hint(){
-  const ex=$("fe").value.trim(),l=ex&&lastOf(ex,$("fd").value);
-  if(!l){$("hint").textContent=ex?"Primera vez con este ejercicio.":"";return}
-  const t=target(l);$("hint").textContent=`Última vez (${dm(l.date)}): ${l.w} kg × ${l.r} × ${l.s}. Meta de hoy: ${t.w} kg × ${t.r}.`;
-}
+  const GROUP_COLORS = {
+    "Pecho": "#ff4d6a", "Espalda": "#38bdf8", "Pierna": "#00e08a", "Hombro": "#ffb020",
+    "Bíceps": "#8b7cff", "Tríceps": "#f472b6", "Core": "#a3e635"
+  };
+  const GROUPS = Object.keys(GROUP_COLORS);
+  const MONTHS = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
 
-function renderSesion(){
-  const D=days(),date=$("fd").value,d=D[date];
-  $("exl").innerHTML=[...new Set(E.map(e=>e.ex))].map(x=>`<option value="${esc(x)}">`).join("");
-  let cmp=null,cl="";
-  if(d){const prev=Object.keys(D).filter(k=>k<date&&D[k].dom===d.dom).sort().pop();if(prev){cmp=pct(d.v,D[prev].v);cl=`vs ${d.dom} del ${dm(prev)}`}}
-  $("sk").innerHTML=`<div class="kpi"><span>Volumen de la sesión</span><b>${d?fmt(d.v):0} kg</b></div><div class="kpi"><span>Series totales</span><b>${d?d.sets:0}</b></div><div class="kpi"><span>Cambio ${cl}</span><b>${delta(cmp)}</b></div>`;
-  $("stab").innerHTML=d?`<table><tr><th>Ejercicio</th><th>Grupo</th><th>Peso × Rep × Series</th><th>Volumen</th><th></th></tr>`+d.items.map(e=>`<tr><td>${esc(e.ex)}</td><td><i class="dot" style="background:${G[e.group]}"></i>${e.group}</td><td>${e.w} kg × ${e.r} × ${e.s}</td><td>${fmt(vol(e))} kg</td><td><button onclick="del(${e.id})">✕</button></td></tr>`).join("")+`<tr><th colspan="3">Total</th><th>${fmt(d.v)} kg</th><th></th></tr></table>`:`<p class="hint">Aún no hay ejercicios en esta fecha.</p>`;
-  const exs=d?[...new Set(d.items.map(e=>e.ex))]:[];
-  $("goals").innerHTML=exs.length?exs.map(x=>{const l=lastOf(x,"9999");const t=target(l);return`<div class="goal"><span>${esc(x)}<br><small style="color:var(--mut)">Hoy: ${l.w} kg × ${l.r}</small></span><b>${t.w} kg × ${t.r}</b></div>`}).join(""):`<p class="hint">Agrega ejercicios para ver tu meta.</p>`;
-  hint();
-}
+  // Regla de progresión: +1 repetición por sesión hasta 12; luego +2.5 kg y vuelve a 8.
+  const MAX_REPS = 12;
+  const RESET_REPS = 8;
+  const WEIGHT_STEP = 2.5;
 
-function ax(W,H,m,max){
-  const sy=v=>m.t+(1-v/max)*(H-m.t-m.b);let g="";
-  for(let i=0;i<=4;i++){const v=max*i/4;g+=`<line x1="${m.l}" x2="${W-m.r}" y1="${sy(v)}" y2="${sy(v)}" stroke="var(--bd)"/><text x="${m.l-6}" y="${sy(v)+4}" text-anchor="end">${fmt(v)}</text>`}
-  return{sy,g};
-}
-const svg=(W,H,b)=>`<svg viewBox="0 0 ${W} ${H}" width="100%" style="min-width:440px">${b}</svg>`;
-const empty=`<p class="hint">Sin datos todavía. Registra una sesión o carga datos de ejemplo en la pestaña Año.</p>`;
+  const EMPTY_CHART = `<p class="hint">Sin datos todavía. Registra una sesión o carga datos de ejemplo en la pestaña Año.</p>`;
 
-function renderProg(){
-  const D=days(),S=Object.keys(D).sort();
-  if(!S.length){$("c1").innerHTML=empty;$("c2").innerHTML=empty;$("px").innerHTML="";return}
-  {const W=640,H=260,m={l:58,r:12,t:12,b:30},max=Math.max(...S.map(k=>D[k].v))*1.1,a=ax(W,H,m,max),bw=(W-m.l-m.r)/S.length;let s=a.g;
-   S.forEach((k,i)=>{const w=Math.min(bw*.7,30),x=m.l+i*bw+(bw-w)/2,y=a.sy(D[k].v);s+=`<rect x="${x}" y="${y}" width="${w}" height="${H-m.b-y}" rx="3" fill="${G[D[k].dom]}"><title>${k}: ${fmt(D[k].v)} kg (${D[k].dom})</title></rect>`;if(i%Math.ceil(S.length/6)===0)s+=`<text x="${x+w/2}" y="${H-10}" text-anchor="middle">${dm(k)}</text>`});
-   $("c1").innerHTML=svg(W,H,s)}
-  const exs=[...new Set(E.map(e=>e.ex))],cur=$("px").value;
-  $("px").innerHTML=exs.map(x=>`<option ${x===cur?"selected":""} value="${esc(x)}">${esc(x)}</option>`).join("");
-  const ex=exs.includes(cur)?cur:exs[0],mp={};E.filter(e=>e.ex===ex).forEach(e=>mp[e.date]=Math.max(mp[e.date]||0,e.w));
-  const ks=Object.keys(mp).sort(),W=640,H=260,m={l:58,r:20,t:14,b:30},max=Math.max(...ks.map(k=>mp[k]))*1.15,a=ax(W,H,m,max);
-  const sx=i=>ks.length<2?(W+m.l)/2:m.l+i/(ks.length-1)*(W-m.l-m.r);let s=a.g;
-  s+=`<polyline fill="none" stroke="var(--ok)" stroke-width="2.5" points="${ks.map((k,i)=>sx(i)+","+a.sy(mp[k])).join(" ")}"/>`;
-  ks.forEach((k,i)=>{s+=`<circle cx="${sx(i)}" cy="${a.sy(mp[k])}" r="4" fill="var(--ok)"><title>${k}: ${mp[k]} kg</title></circle>`;if(i%Math.ceil(ks.length/6)===0)s+=`<text x="${sx(i)}" y="${H-10}" text-anchor="middle">${dm(k)}</text>`});
-  $("c2").innerHTML=svg(W,H,s);
-}
+  const $ = id => document.getElementById(id);
 
-function sumBy(list){const g={};let v=0,sets=0;list.forEach(e=>{g[e.group]=(g[e.group]||0)+vol(e);v+=vol(e);sets+=e.s});return{g,v,sets}}
-function renderMes(){
-  const ym=$("mm").value||ymd(new Date()).slice(0,7),[y,mo]=ym.split("-").map(Number);
-  const pv=new Date(y,mo-2,1),pym=pv.getFullYear()+"-"+p2(pv.getMonth()+1);
-  const L=E.filter(e=>e.date.startsWith(ym)),T=sumBy(L),P=sumBy(E.filter(e=>e.date.startsWith(pym))),D=days();
-  const n=new Set(L.map(e=>e.date)).size;
-  $("mk").innerHTML=`<div class="kpi"><span>Sesiones</span><b>${n}</b></div><div class="kpi"><span>Volumen total</span><b>${fmt(T.v)} kg</b></div><div class="kpi"><span>Series</span><b>${T.sets}</b></div><div class="kpi"><span>vs mes anterior</span><b>${delta(pct(T.v,P.v))}</b></div>`;
-  $("ml").innerHTML=legend();
-  const off=(new Date(y,mo-1,1).getDay()+6)%7,nd=new Date(y,mo,0).getDate(),mx=Math.max(1,...Object.keys(D).filter(k=>k.startsWith(ym)).map(k=>D[k].v));
-  let h=["L","M","X","J","V","S","D"].map(x=>`<div class="h">${x}</div>`).join("")+"<div style='background:none'></div>".repeat(off);
-  for(let i=1;i<=nd;i++){const k=ym+"-"+p2(i),d=D[k];h+=d?`<div style="background:${rgba(G[d.dom],.4+.6*d.v/mx)};color:#000;font-weight:700" title="${k}: ${fmt(d.v)} kg (${d.dom})">${i}</div>`:`<div>${i}</div>`}
-  $("cal").innerHTML=h;
-  const gm=Math.max(1,...GN.map(g=>T.g[g]||0));
-  $("mb").innerHTML=GN.map(g=>`<div class="bar"><span>${g}</span><i style="width:${(T.g[g]||0)/gm*60}%;background:${G[g]};min-width:${T.g[g]?4:0}px"></i><small>${fmt(T.g[g]||0)} kg</small></div>`).join("");
-}
 
-function renderAnio(){
-  const ys=[...new Set([new Date().getFullYear(),...E.map(e=>+e.date.slice(0,4))])].sort((a,b)=>b-a),cur=$("ay").value||ys[0];
-  $("ay").innerHTML=ys.map(y=>`<option ${String(y)===String(cur)?"selected":""}>${y}</option>`).join("");
-  const y=+$("ay").value,D=days(),L=E.filter(e=>e.date.startsWith(y+"-")),T=sumBy(L),n=new Set(L.map(e=>e.date)).size;
-  const mv=Array.from({length:12},(_,i)=>sumBy(L.filter(e=>+e.date.slice(5,7)===i+1)));
-  const best=mv.reduce((b,x,i)=>x.v>mv[b].v?i:b,0);
-  $("ak").innerHTML=`<div class="kpi"><span>Sesiones</span><b>${n}</b></div><div class="kpi"><span>Volumen anual</span><b>${fmt(T.v)} kg</b></div><div class="kpi"><span>Promedio por sesión</span><b>${fmt(n?T.v/n:0)} kg</b></div><div class="kpi"><span>Mejor mes</span><b>${T.v?MES[best]:"—"}</b></div>`;
-  $("al").innerHTML=legend();
-  const off=(new Date(y,0,1).getDay()+6)%7,tot=(new Date(y,11,31)-new Date(y,0,1))/864e5+1,wk=Math.ceil((off+tot)/7);
-  const mx=Math.max(1,...Object.keys(D).filter(k=>k.startsWith(y+"-")).map(k=>D[k].v));
-  let s="";
-  for(let i=0;i<tot;i++){const dt=new Date(y,0,1+i),k=ymd(dt),c=Math.floor((i+off)/7),r=(i+off)%7,d=D[k];
-    s+=`<rect x="${30+c*15}" y="${20+r*15}" width="12" height="12" rx="3" fill="${d?rgba(G[d.dom],.4+.6*d.v/mx):"#141418"}"><title>${k}${d?": "+fmt(d.v)+" kg ("+d.dom+")":""}</title></rect>`;
-    if(dt.getDate()===1)s+=`<text x="${30+c*15}" y="12">${MES[dt.getMonth()]}</text>`}
-  ["L","X","V"].forEach((t,i)=>s+=`<text x="4" y="${20+i*30+10}">${t}</text>`);
-  $("heat").innerHTML=`<svg viewBox="0 0 ${40+wk*15} 130" style="min-width:${40+wk*15}px;height:130px">${s}</svg>`;
-  {const W=640,H=250,m={l:58,r:12,t:12,b:26},max=Math.max(1,...mv.map(x=>x.v))*1.1,a=ax(W,H,m,max),bw=(W-m.l-m.r)/12;let b=a.g;
-   mv.forEach((x,i)=>{let acc=0;const w=bw*.65,xx=m.l+i*bw+(bw-w)/2;GN.forEach(g=>{const v=x.g[g]||0;if(!v)return;const y0=a.sy(acc),y1=a.sy(acc+v);b+=`<rect x="${xx}" y="${y1}" width="${w}" height="${y0-y1}" fill="${G[g]}"><title>${MES[i]} · ${g}: ${fmt(v)} kg</title></rect>`;acc+=v});b+=`<text x="${xx+w/2}" y="${H-8}" text-anchor="middle">${MES[i]}</text>`});
-   $("stk").innerHTML=svg(W,H,b)}
-}
+  /* =====================================================================
+     2. DATOS GUARDADOS
+     Cada registro: { id, date: "AAAA-MM-DD", group, ex, w (kg), r (reps), s (series) }
+     ===================================================================== */
+  let entries = loadEntries();
 
-function demo(){
-  const plan=[["Pecho",[["Press banca",60],["Press inclinado",24]]],["Espalda",[["Remo con barra",50],["Jalón al pecho",45]]],["Pierna",[["Sentadilla",80],["Prensa",140]]],["Hombro",[["Press militar",35],["Elevaciones laterales",8]]],["Bíceps",[["Curl con barra",25]]],["Tríceps",[["Fondos",0],["Press francés",20]]]];
-  let k=0;const st=new Date();st.setDate(st.getDate()-170);
-  for(let i=0;i<=170;i++){const dt=new Date(st);dt.setDate(st.getDate()+i);if(![1,3,5].includes(dt.getDay())||(i*7)%11===0)continue;
-    const [g,ex]=plan[k%plan.length],c=Math.floor(k/plan.length);k++;
-    ex.forEach(([n,w])=>E.push({id:Date.now()+Math.random(),date:ymd(dt),group:g,ex:n,w:w+2.5*Math.floor(c/2),r:8+c%3*2,s:3}))}
-  save();renderAll();
-}
-let armed=false;
-function clr(){if(!armed){armed=true;$("clr").textContent="¿Seguro? Haz clic otra vez";return}E=[];save();armed=false;$("clr").textContent="Borrar todo";renderAll()}
+  function loadEntries() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); }
+    catch (err) { return []; }
+  }
 
-function renderAll(){renderSesion();renderProg();renderMes();renderAnio()}
-$("fg").innerHTML=GN.map(g=>`<option>${g}</option>`).join("");
-$("fd").value=ymd(new Date());$("mm").value=ymd(new Date()).slice(0,7);
-tab(1);
+  function saveEntries() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(entries)); }
+    catch (err) { /* sin almacenamiento disponible: la app sigue funcionando en memoria */ }
+  }
+
+  const newId = () => Date.now() + Math.random();
+
+
+  /* =====================================================================
+     3. UTILIDADES DE FORMATO
+     ===================================================================== */
+  const pad2 = n => String(n).padStart(2, "0");
+  const formatKg = n => Math.round(n).toLocaleString("es-MX");
+  const toISODate = d => `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+  const shortDate = iso => `${iso.slice(8)}/${iso.slice(5, 7)}`;
+
+  function escapeHtml(text) {
+    const map = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" };
+    return String(text).replace(/[&<>"]/g, c => map[c]);
+  }
+
+  function withAlpha(hex, alpha) {
+    const n = parseInt(hex.slice(1), 16);
+    return `rgba(${n >> 16}, ${(n >> 8) & 255}, ${n & 255}, ${alpha})`;
+  }
+
+  function percentChange(now, before) {
+    return before ? (now - before) / before * 100 : null;
+  }
+
+  // Verde si subió, rojo si bajó, gris si quedó igual, "—" si no hay con qué comparar.
+  function changeBadge(percent) {
+    if (percent === null) return "—";
+    if (Math.abs(percent) < 0.05) return `<span class="eq">= 0.0%</span>`;
+    const up = percent > 0;
+    return `<span class="${up ? "up" : "dn"}">${up ? "▲" : "▼"} ${Math.abs(percent).toFixed(1)}%</span>`;
+  }
+
+  function kpi(label, value, note = "") {
+    return `<div class="kpi"><span>${label}</span><b>${value}</b>${note ? `<small>${note}</small>` : ""}</div>`;
+  }
+
+  const groupLegend = () =>
+    GROUPS.map(g => `<span><i class="dot" style="background:${GROUP_COLORS[g]}"></i>${g}</span>`).join("");
+
+
+  /* =====================================================================
+     4. LÓGICA: sesiones, historial por ejercicio y metas
+     ===================================================================== */
+  const volumeOf = entry => entry.w * entry.r * entry.s;
+  const exerciseKey = name => name.trim().toLowerCase();   // "Press banca" y "press banca" son el mismo
+
+  // Agrupa los registros por fecha. "dominant" es el grupo con más volumen ese día.
+  function buildSessions() {
+    const sessions = {};
+    for (const e of entries) {
+      if (!sessions[e.date]) sessions[e.date] = { volume: 0, sets: 0, byGroup: {}, items: [] };
+      const s = sessions[e.date];
+      s.volume += volumeOf(e);
+      s.sets += e.s;
+      s.byGroup[e.group] = (s.byGroup[e.group] || 0) + volumeOf(e);
+      s.items.push(e);
+    }
+    for (const s of Object.values(sessions)) {
+      s.dominant = Object.keys(s.byGroup).sort((a, b) => s.byGroup[b] - s.byGroup[a])[0];
+    }
+    return sessions;
+  }
+
+  // Totales de una lista de registros (para mes y año).
+  function summarize(list) {
+    const total = { byGroup: {}, volume: 0, sets: 0 };
+    for (const e of list) {
+      total.byGroup[e.group] = (total.byGroup[e.group] || 0) + volumeOf(e);
+      total.volume += volumeOf(e);
+      total.sets += e.s;
+    }
+    return total;
+  }
+
+  // --- Historial de un ejercicio ---
+  const entriesOf = name => entries.filter(e => exerciseKey(e.ex) === exerciseKey(name));
+
+  // Fecha de la última vez que hiciste el ejercicio, antes de "before" (o la última de todas).
+  function lastDateBefore(name, before) {
+    const dates = entriesOf(name).map(e => e.date).filter(d => !before || d < before);
+    return dates.length ? dates.sort().pop() : null;
+  }
+
+  // Mejor serie de ese día: la de más peso y, si empatan, la de más repeticiones.
+  function bestSetOn(name, date) {
+    return entriesOf(name)
+      .filter(e => e.date === date)
+      .sort((a, b) => b.w - a.w || b.r - a.r)[0];
+  }
+
+  const lastSet = (name, before) => {
+    const date = lastDateBefore(name, before);
+    return date ? bestSetOn(name, date) : null;
+  };
+
+  const exerciseVolumeOn = (name, date) =>
+    entriesOf(name).filter(e => e.date === date).reduce((sum, e) => sum + volumeOf(e), 0);
+
+  function nextTarget(set) {
+    return set.r >= MAX_REPS
+      ? { w: set.w + WEIGHT_STEP, r: RESET_REPS }
+      : { w: set.w, r: set.r + 1 };
+  }
+
+  /* Compara la sesión con la última vez de CADA ejercicio que contiene.
+     Antes se comparaba contra sesiones con el mismo "grupo dominante"; si ese grupo no
+     coincidía con ninguna sesión anterior, no había comparación y nunca salía verde. */
+  function compareWithLastTime(session, date) {
+    const names = [...new Set(session.items.map(e => exerciseKey(e.ex)))];
+    let today = 0, before = 0, compared = 0;
+    for (const name of names) {
+      const previousDate = lastDateBefore(name, date);
+      if (!previousDate) continue;               // ejercicio nuevo: no hay con qué compararlo
+      today += exerciseVolumeOn(name, date);
+      before += exerciseVolumeOn(name, previousDate);
+      compared++;
+    }
+    return { change: percentChange(today, before), compared, fresh: names.length - compared };
+  }
+
+  function comparisonNote({ change, compared, fresh }) {
+    if (!compared) return "Primera vez con estos ejercicios";
+    if (change === null) return "La última vez no tuvo volumen";
+    const parts = [compared === 1 ? "1 ejercicio comparado" : `${compared} ejercicios comparados`];
+    if (fresh) parts.push(fresh === 1 ? "1 nuevo" : `${fresh} nuevos`);
+    return parts.join(" · ");
+  }
+
+
+  /* =====================================================================
+     5. PESTAÑA SESIÓN
+     ===================================================================== */
+  function renderHint() {
+    const name = $("fe").value.trim();
+    const last = name && lastSet(name, $("fd").value);
+    if (!last) {
+      $("hint").textContent = name ? "Primera vez con este ejercicio." : "";
+      return;
+    }
+    const goal = nextTarget(last);
+    $("hint").textContent =
+      `Última vez (${shortDate(last.date)}): ${last.w} kg × ${last.r} × ${last.s}. Meta de hoy: ${goal.w} kg × ${goal.r}.`;
+  }
+
+  function sessionTable(session) {
+    const rows = session.items.map(e => `
+      <tr>
+        <td>${escapeHtml(e.ex)}</td>
+        <td><i class="dot" style="background:${GROUP_COLORS[e.group]}"></i>${e.group}</td>
+        <td>${e.w} kg × ${e.r} × ${e.s}</td>
+        <td>${formatKg(volumeOf(e))} kg</td>
+        <td><button data-delete="${e.id}" aria-label="Quitar ${escapeHtml(e.ex)}">✕</button></td>
+      </tr>`).join("");
+    return `<table>
+      <tr><th>Ejercicio</th><th>Grupo</th><th>Peso × Rep × Series</th><th>Volumen</th><th></th></tr>
+      ${rows}
+      <tr><th colspan="3">Total</th><th>${formatKg(session.volume)} kg</th><th></th></tr>
+    </table>`;
+  }
+
+  function goalsList(session, date) {
+    const names = new Map();                      // un solo renglón por ejercicio
+    session.items.forEach(e => names.set(exerciseKey(e.ex), e.ex));
+    return [...names.values()].map(name => {
+      const set = bestSetOn(name, date);
+      const goal = nextTarget(set);
+      return `<div class="goal">
+        <span>${escapeHtml(name)}<br><small>Hoy: ${set.w} kg × ${set.r}</small></span>
+        <b>${goal.w} kg × ${goal.r}</b>
+      </div>`;
+    }).join("");
+  }
+
+  function renderSession() {
+    const sessions = buildSessions();
+    const date = $("fd").value;
+    const session = sessions[date];
+
+    $("exl").innerHTML = [...new Set(entries.map(e => e.ex))]
+      .map(name => `<option value="${escapeHtml(name)}">`).join("");
+
+    const comparison = session ? compareWithLastTime(session, date) : null;
+    $("sk").innerHTML =
+      kpi("Volumen de la sesión", `${session ? formatKg(session.volume) : 0} kg`) +
+      kpi("Series totales", session ? session.sets : 0) +
+      kpi("Volumen vs última vez",
+          comparison ? changeBadge(comparison.change) : "—",
+          comparison ? comparisonNote(comparison) : "");
+
+    $("stab").innerHTML = session
+      ? sessionTable(session)
+      : `<p class="hint">Aún no hay ejercicios en esta fecha.</p>`;
+
+    $("goals").innerHTML = session
+      ? goalsList(session, date)
+      : `<p class="hint">Agrega ejercicios para ver tu meta.</p>`;
+
+    renderHint();
+  }
+
+  function addEntry() {
+    const entry = {
+      id: newId(),
+      date: $("fd").value,
+      group: $("fg").value,
+      ex: $("fe").value.trim(),
+      w: parseFloat($("fw").value),
+      r: parseInt($("fr").value, 10),
+      s: parseInt($("fs").value, 10) || 1
+    };
+    if (!entry.date || !entry.ex || isNaN(entry.w) || !(entry.r > 0)) {
+      $("hint").textContent = "Completa ejercicio, peso y repeticiones.";
+      return;
+    }
+    entries.push(entry);
+    saveEntries();
+    renderAll();
+  }
+
+  function deleteEntry(id) {
+    entries = entries.filter(e => e.id !== id);
+    saveEntries();
+    renderAll();
+  }
+
+
+  /* =====================================================================
+     6. GRÁFICAS SVG (base común)
+     ===================================================================== */
+  // Ejes y líneas de la cuadrícula. Devuelve la escala vertical y el SVG de la cuadrícula.
+  function makeAxis(width, height, margin, max) {
+    const scaleY = v => margin.t + (1 - v / max) * (height - margin.t - margin.b);
+    let grid = "";
+    for (let i = 0; i <= 4; i++) {
+      const value = max * i / 4;
+      const y = scaleY(value);
+      grid += `<line x1="${margin.l}" x2="${width - margin.r}" y1="${y}" y2="${y}" stroke="var(--bd)"/>` +
+              `<text x="${margin.l - 6}" y="${y + 4}" text-anchor="end">${formatKg(value)}</text>`;
+    }
+    return { scaleY, grid };
+  }
+
+  const chartSvg = (width, height, body) =>
+    `<svg viewBox="0 0 ${width} ${height}" width="100%" style="min-width:440px">${body}</svg>`;
+
+
+  /* =====================================================================
+     7. PESTAÑA PROGRESO
+     ===================================================================== */
+  function volumeChart(sessions, dates) {
+    const W = 640, H = 260, margin = { l: 58, r: 12, t: 12, b: 30 };
+    const max = Math.max(1, ...dates.map(d => sessions[d].volume)) * 1.1;
+    const axis = makeAxis(W, H, margin, max);
+    const slot = (W - margin.l - margin.r) / dates.length;
+    const labelEvery = Math.ceil(dates.length / 6);
+    let svg = axis.grid;
+
+    dates.forEach((date, i) => {
+      const s = sessions[date];
+      const w = Math.min(slot * 0.7, 30);
+      const x = margin.l + i * slot + (slot - w) / 2;
+      const y = axis.scaleY(s.volume);
+      svg += `<rect x="${x}" y="${y}" width="${w}" height="${H - margin.b - y}" rx="3" fill="${GROUP_COLORS[s.dominant]}">` +
+             `<title>${date}: ${formatKg(s.volume)} kg (${s.dominant})</title></rect>`;
+      if (i % labelEvery === 0) {
+        svg += `<text x="${x + w / 2}" y="${H - 10}" text-anchor="middle">${shortDate(date)}</text>`;
+      }
+    });
+    return chartSvg(W, H, svg);
+  }
+
+  function maxWeightChart(exerciseName) {
+    const bestByDate = {};
+    entries.filter(e => e.ex === exerciseName).forEach(e => {
+      bestByDate[e.date] = Math.max(bestByDate[e.date] || 0, e.w);
+    });
+    const dates = Object.keys(bestByDate).sort();
+
+    const W = 640, H = 260, margin = { l: 58, r: 20, t: 14, b: 30 };
+    const max = Math.max(1, ...dates.map(d => bestByDate[d])) * 1.15;
+    const axis = makeAxis(W, H, margin, max);
+    const scaleX = i => dates.length < 2
+      ? (W + margin.l) / 2
+      : margin.l + i / (dates.length - 1) * (W - margin.l - margin.r);
+    const labelEvery = Math.ceil(dates.length / 6);
+
+    let svg = axis.grid;
+    svg += `<polyline fill="none" stroke="var(--ok)" stroke-width="2.5" points="` +
+           dates.map((d, i) => `${scaleX(i)},${axis.scaleY(bestByDate[d])}`).join(" ") + `"/>`;
+    dates.forEach((date, i) => {
+      svg += `<circle cx="${scaleX(i)}" cy="${axis.scaleY(bestByDate[date])}" r="4" fill="var(--ok)">` +
+             `<title>${date}: ${bestByDate[date]} kg</title></circle>`;
+      if (i % labelEvery === 0) {
+        svg += `<text x="${scaleX(i)}" y="${H - 10}" text-anchor="middle">${shortDate(date)}</text>`;
+      }
+    });
+    return chartSvg(W, H, svg);
+  }
+
+  function renderProgress() {
+    const sessions = buildSessions();
+    const dates = Object.keys(sessions).sort();
+    if (!dates.length) {
+      $("c1").innerHTML = EMPTY_CHART;
+      $("c2").innerHTML = EMPTY_CHART;
+      $("px").innerHTML = "";
+      return;
+    }
+    $("c1").innerHTML = volumeChart(sessions, dates);
+
+    const names = [...new Set(entries.map(e => e.ex))];
+    const current = $("px").value;
+    $("px").innerHTML = names
+      .map(n => `<option ${n === current ? "selected" : ""} value="${escapeHtml(n)}">${escapeHtml(n)}</option>`)
+      .join("");
+    $("c2").innerHTML = maxWeightChart(names.includes(current) ? current : names[0]);
+  }
+
+
+  /* =====================================================================
+     8. PESTAÑA MES
+     ===================================================================== */
+  function renderMonth() {
+    const ym = $("mm").value || toISODate(new Date()).slice(0, 7);
+    const [year, month] = ym.split("-").map(Number);
+    const previous = new Date(year, month - 2, 1);
+    const previousYm = `${previous.getFullYear()}-${pad2(previous.getMonth() + 1)}`;
+
+    const inMonth = entries.filter(e => e.date.startsWith(ym));
+    const total = summarize(inMonth);
+    const previousTotal = summarize(entries.filter(e => e.date.startsWith(previousYm)));
+    const sessionCount = new Set(inMonth.map(e => e.date)).size;
+
+    $("mk").innerHTML =
+      kpi("Sesiones", sessionCount) +
+      kpi("Volumen total", `${formatKg(total.volume)} kg`) +
+      kpi("Series", total.sets) +
+      kpi("vs mes anterior", changeBadge(percentChange(total.volume, previousTotal.volume)));
+
+    $("ml").innerHTML = groupLegend();
+    $("cal").innerHTML = monthCalendar(ym, year, month);
+
+    const maxGroup = Math.max(1, ...GROUPS.map(g => total.byGroup[g] || 0));
+    $("mb").innerHTML = GROUPS.map(g => {
+      const v = total.byGroup[g] || 0;
+      return `<div class="bar"><span>${g}</span>` +
+             `<i style="width:${v / maxGroup * 60}%;background:${GROUP_COLORS[g]};min-width:${v ? 4 : 0}px"></i>` +
+             `<small>${formatKg(v)} kg</small></div>`;
+    }).join("");
+  }
+
+  function monthCalendar(ym, year, month) {
+    const sessions = buildSessions();
+    const offset = (new Date(year, month - 1, 1).getDay() + 6) % 7;   // la semana empieza en lunes
+    const daysInMonth = new Date(year, month, 0).getDate();
+    const maxVolume = Math.max(1, ...Object.keys(sessions).filter(d => d.startsWith(ym)).map(d => sessions[d].volume));
+
+    let html = ["L", "M", "X", "J", "V", "S", "D"].map(l => `<div class="h">${l}</div>`).join("");
+    html += `<div class="blank"></div>`.repeat(offset);
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = `${ym}-${pad2(day)}`;
+      const s = sessions[date];
+      html += s
+        ? `<div style="background:${withAlpha(GROUP_COLORS[s.dominant], 0.4 + 0.6 * s.volume / maxVolume)};color:#000;font-weight:700" title="${date}: ${formatKg(s.volume)} kg (${s.dominant})">${day}</div>`
+        : `<div>${day}</div>`;
+    }
+    return html;
+  }
+
+
+  /* =====================================================================
+     9. PESTAÑA AÑO
+     ===================================================================== */
+  function renderYear() {
+    const years = [...new Set([new Date().getFullYear(), ...entries.map(e => +e.date.slice(0, 4))])]
+      .sort((a, b) => b - a);
+    const selected = $("ay").value || years[0];
+    $("ay").innerHTML = years
+      .map(y => `<option ${String(y) === String(selected) ? "selected" : ""}>${y}</option>`).join("");
+    const year = +$("ay").value;
+
+    const sessions = buildSessions();
+    const inYear = entries.filter(e => e.date.startsWith(year + "-"));
+    const total = summarize(inYear);
+    const sessionCount = new Set(inYear.map(e => e.date)).size;
+    const monthly = Array.from({ length: 12 }, (_, i) =>
+      summarize(inYear.filter(e => +e.date.slice(5, 7) === i + 1)));
+    const bestMonth = monthly.reduce((best, m, i) => m.volume > monthly[best].volume ? i : best, 0);
+
+    $("ak").innerHTML =
+      kpi("Sesiones", sessionCount) +
+      kpi("Volumen anual", `${formatKg(total.volume)} kg`) +
+      kpi("Promedio por sesión", `${formatKg(sessionCount ? total.volume / sessionCount : 0)} kg`) +
+      kpi("Mejor mes", total.volume ? MONTHS[bestMonth] : "—");
+
+    $("al").innerHTML = groupLegend();
+    $("heat").innerHTML = yearHeatmap(year, sessions);
+    $("stk").innerHTML = monthlyStackedChart(monthly);
+  }
+
+  // Un cuadro por día, en columnas de semanas (lunes arriba).
+  function yearHeatmap(year, sessions) {
+    const STEP = 15, LEFT = 30, TOP = 20;
+    const offset = (new Date(year, 0, 1).getDay() + 6) % 7;
+    const totalDays = Math.round((new Date(year, 11, 31) - new Date(year, 0, 1)) / 864e5) + 1;
+    const weeks = Math.ceil((offset + totalDays) / 7);
+    const maxVolume = Math.max(1, ...Object.keys(sessions).filter(d => d.startsWith(year + "-")).map(d => sessions[d].volume));
+
+    let svg = "";
+    for (let i = 0; i < totalDays; i++) {
+      const day = new Date(year, 0, 1 + i);
+      const date = toISODate(day);
+      const column = Math.floor((i + offset) / 7);
+      const row = (i + offset) % 7;
+      const s = sessions[date];
+      const fill = s ? withAlpha(GROUP_COLORS[s.dominant], 0.4 + 0.6 * s.volume / maxVolume) : "var(--cell)";
+      const tooltip = s ? `: ${formatKg(s.volume)} kg (${s.dominant})` : "";
+      svg += `<rect x="${LEFT + column * STEP}" y="${TOP + row * STEP}" width="12" height="12" rx="3" fill="${fill}"><title>${date}${tooltip}</title></rect>`;
+      if (day.getDate() === 1) svg += `<text x="${LEFT + column * STEP}" y="12">${MONTHS[day.getMonth()]}</text>`;
+    }
+    ["L", "X", "V"].forEach((letter, i) => { svg += `<text x="4" y="${TOP + i * 30 + 10}">${letter}</text>`; });
+
+    const width = 40 + weeks * STEP;
+    return `<svg viewBox="0 0 ${width} 130" style="min-width:${width}px;height:130px">${svg}</svg>`;
+  }
+
+  function monthlyStackedChart(monthly) {
+    const W = 640, H = 250, margin = { l: 58, r: 12, t: 12, b: 26 };
+    const max = Math.max(1, ...monthly.map(m => m.volume)) * 1.1;
+    const axis = makeAxis(W, H, margin, max);
+    const slot = (W - margin.l - margin.r) / 12;
+    let svg = axis.grid;
+
+    monthly.forEach((month, i) => {
+      const w = slot * 0.65;
+      const x = margin.l + i * slot + (slot - w) / 2;
+      let stacked = 0;
+      GROUPS.forEach(group => {
+        const v = month.byGroup[group] || 0;
+        if (!v) return;
+        const yBottom = axis.scaleY(stacked);
+        const yTop = axis.scaleY(stacked + v);
+        svg += `<rect x="${x}" y="${yTop}" width="${w}" height="${yBottom - yTop}" fill="${GROUP_COLORS[group]}">` +
+               `<title>${MONTHS[i]} · ${group}: ${formatKg(v)} kg</title></rect>`;
+        stacked += v;
+      });
+      svg += `<text x="${x + w / 2}" y="${H - 8}" text-anchor="middle">${MONTHS[i]}</text>`;
+    });
+    return chartSvg(W, H, svg);
+  }
+
+
+  /* =====================================================================
+     10. DATOS DE EJEMPLO Y BORRADO
+     ===================================================================== */
+  function loadDemoData() {
+    // [grupo, [[ejercicio, peso base], ...]]
+    const plan = [
+      ["Pecho",   [["Press banca", 60], ["Press inclinado", 24]]],
+      ["Espalda", [["Remo con barra", 50], ["Jalón al pecho", 45]]],
+      ["Pierna",  [["Sentadilla", 80], ["Prensa", 140]]],
+      ["Hombro",  [["Press militar", 35], ["Elevaciones laterales", 8]]],
+      ["Bíceps",  [["Curl con barra", 25]]],
+      ["Tríceps", [["Fondos", 0], ["Press francés", 20]]]
+    ];
+    const DAYS = 170;
+    const start = new Date();
+    start.setDate(start.getDate() - DAYS);
+    let sessionNumber = 0;
+
+    for (let i = 0; i <= DAYS; i++) {
+      const day = new Date(start);
+      day.setDate(start.getDate() + i);
+      const trainsToday = [1, 3, 5].includes(day.getDay()) && (i * 7) % 11 !== 0;   // lun, mié, vie y algún descanso
+      if (!trainsToday) continue;
+
+      const [group, exercises] = plan[sessionNumber % plan.length];
+      const cycle = Math.floor(sessionNumber / plan.length);
+      sessionNumber++;
+      exercises.forEach(([name, baseWeight]) => entries.push({
+        id: newId(),
+        date: toISODate(day),
+        group,
+        ex: name,
+        w: baseWeight + WEIGHT_STEP * Math.floor(cycle / 2),
+        r: 8 + (cycle % 3) * 2,
+        s: 3
+      }));
+    }
+    saveEntries();
+    renderAll();
+  }
+
+  let clearArmed = false;   // el borrado pide un segundo clic para confirmar
+
+  function clearAll() {
+    if (!clearArmed) {
+      clearArmed = true;
+      $("btnClear").textContent = "¿Seguro? Haz clic otra vez";
+      return;
+    }
+    entries = [];
+    saveEntries();
+    clearArmed = false;
+    $("btnClear").textContent = "Borrar todo";
+    renderAll();
+  }
+
+
+  /* =====================================================================
+     11. NAVEGACIÓN Y ARRANQUE
+     ===================================================================== */
+  function renderAll() {
+    renderSession();
+    renderProgress();
+    renderMonth();
+    renderYear();
+  }
+
+  function showTab(n) {
+    for (let i = 1; i <= 4; i++) {
+      $("t" + i).hidden = i !== n;
+      $("b" + i).className = i === n ? "on" : "";
+    }
+    renderAll();
+  }
+
+  document.querySelectorAll(".tabs button").forEach(button =>
+    button.addEventListener("click", () => showTab(+button.dataset.tab)));
+
+  $("fd").addEventListener("input", renderAll);
+  $("fe").addEventListener("input", renderHint);
+  $("btnAdd").addEventListener("click", addEntry);
+  $("stab").addEventListener("click", event => {
+    const button = event.target.closest("[data-delete]");
+    if (button) deleteEntry(Number(button.dataset.delete));
+  });
+  $("px").addEventListener("change", renderProgress);
+  $("mm").addEventListener("input", renderMonth);
+  $("ay").addEventListener("change", renderYear);
+  $("btnDemo").addEventListener("click", loadDemoData);
+  $("btnClear").addEventListener("click", clearAll);
+
+  $("fg").innerHTML = GROUPS.map(g => `<option>${g}</option>`).join("");
+  $("fd").value = toISODate(new Date());
+  $("mm").value = toISODate(new Date()).slice(0, 7);
+  showTab(1);
+})();
 </script>
 </body>
 </html>
